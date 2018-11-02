@@ -1,0 +1,11 @@
+1.ÅäÖÃÎÄ¼ş
+config.hisiv300
+
+arm-hisiv300-linux-
+-DLOCALE_NOT_USED
+
+
+
+2.±àÒë
+make
+make install PREFIX=$PWD/000
