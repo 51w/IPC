@@ -8,10 +8,14 @@
 portNumBits rtspServerPortNum = 8554;
 char* streamDescription = strDup("RTSP/RTP stream from Ingenic Media");
 
-int main()
+TaskScheduler* scheduler;
+UsageEnvironment* env;
+RTSPServer* rtspServer;
+
+void RtspServer00()
 {
-	TaskScheduler* scheduler = BasicTaskScheduler::createNew();
-	UsageEnvironment* env = BasicUsageEnvironment::createNew(*scheduler);
+	scheduler = BasicTaskScheduler::createNew();
+	env = BasicUsageEnvironment::createNew(*scheduler);
 
 	VideoInput* videoInput = VideoInput::createNew(*env, 1);
 	if (videoInput == NULL) {
@@ -20,7 +24,7 @@ int main()
 	}
 	
 	// Create the RTSP server:
-	RTSPServer* rtspServer = NULL;
+	
 	// Normal case: Streaming from a built-in RTSP server:
 	rtspServer = RTSPServer::createNew(*env, rtspServerPortNum, NULL);
 	if (rtspServer == NULL) {
@@ -40,4 +44,12 @@ int main()
 
 	// Begin the LIVE555 event loop:
 	env->taskScheduler().doEventLoop(); // does not return
+}
+
+void RtspServerExit()
+{
+	delete scheduler;
+	//delete env;
+	//
+	printf("RtspServer Exit.\n");
 }
