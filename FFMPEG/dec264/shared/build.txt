@@ -1,0 +1,6 @@
+
+
+./configure --prefix=$PWD/111 --enable-shared --disable-everything --enable-decoder=h264 --enable-parser=h264 --enable-filter=scale  --disable-static --disable-doc --disable-ffmpeg --disable-ffplay --disable-ffprobe  --disable-symver --disable-avresample --enable-small  --disable-x86asm
+
+make
+make install
