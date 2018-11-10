@@ -98,7 +98,7 @@ int decode(AVCodecContext *pdec_ctx, AVFrame *pframe, AVPacket *ppkt, YuvData *y
 		ret = avcodec_receive_frame(pdec_ctx, pframe);
 		if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
 		{
-			//fprintf(stderr, "EAGAIN or AVERROR_EOF\n");
+			fprintf(stderr, "EAGAIN or AVERROR_EOF\n");
 			return -1;
 		}
 		else if (ret < 0)

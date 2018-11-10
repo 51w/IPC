@@ -3,5 +3,5 @@ CXX   = $(CROSS_COMPILE)g++
 CC    = $(CROSS_COMPILE)gcc
 
 all:
-	$(CC) client.c -o client
+	$(CXX) client.cpp -o client
 	$(CXX) udp.cpp -std=c++11 -o udp

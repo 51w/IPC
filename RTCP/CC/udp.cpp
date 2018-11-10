@@ -93,7 +93,7 @@ int main()
 
         ts_current = getTimeStamp();
         //ts_current += 3600;
-        cout << rtp_num++ << "   " << frameSize << endl;
+        //cout << rtp_num++ << "   " << frameSize << endl;
 
         if(frameSize <= MAX_RTP_PAYLOAD_SIZE)
         {
@@ -220,7 +220,7 @@ int main()
             sendto(sockfd, sendbuf, bytes, 0, (struct sockaddr*)&peerRtpAddr, sizeof(struct sockaddr));
             */
         }
-        usleep(20*1000);
+        usleep(50*1000);
 
         id++;
         if(id == input.size()) id =0;
