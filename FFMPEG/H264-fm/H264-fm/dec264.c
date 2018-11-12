@@ -120,6 +120,7 @@ int decode(AVCodecContext *pdec_ctx, AVFrame *pframe, AVPacket *ppkt, YuvData *y
 	return 0;
 }
 
+#if 0
 int DecodeFrame(unsigned char * framedata, int framelen, YuvData *yuv)
 {
 	int success = -1;
@@ -141,6 +142,19 @@ int DecodeFrame(unsigned char * framedata, int framelen, YuvData *yuv)
 
 	return success;
 }
+#else
+int DecodeFrame(unsigned char * framedata, int framelen, YuvData *yuv)
+{
+	int success = -1;
+
+	pkt->data = framedata;
+	pkt->size = framelen;
+
+	success = decode(codec_ctx, frame, pkt, yuv);
+
+	return success;
+}
+#endif
 
 #ifdef __cplusplus  
 };

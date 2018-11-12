@@ -36,10 +36,58 @@ int main(int argc, char* argv[])
 	cv::namedWindow("RTP", CV_WINDOW_NORMAL);
 	cv::Mat yuvImg(540*3, 1920, CV_8UC1);
 
+
+	unsigned char sps[50];
+	int sps_len = 0;
+	unsigned char pps[50];
+	int pps_len = 0;
+
+	sps[0] = 0x00;
+	sps[1] = 0x00;
+	sps[2] = 0x00;
+	sps[3] = 0x01;
+
+	pps[0] = 0x00;
+	pps[1] = 0x00;
+	pps[2] = 0x00;
+	pps[3] = 0x01;
+
 	for(int i = 0; i < input.size(); i++)
 	{
-		memcpy(buff + 4, input[i].data, input[i].size);
-		len = input[i].size + 4;
+		if (input[i].type == 7)
+		{
+			memcpy(sps + 4, input[i].data, input[i].size);
+			sps_len = input[i].size + 4;
+			continue;
+		}
+		if (input[i].type == 8)
+		{
+			memcpy(pps + 4, input[i].data, input[i].size);
+			pps_len = input[i].size + 4;
+			continue;
+		}
+
+		if (input[i].type == 5)
+		{
+			len = 0;
+			memcpy(buff,           sps, sps_len);
+			memcpy(buff + sps_len, pps, pps_len);
+			len += sps_len + pps_len;
+
+			buff[len + 0] = 0x00;
+			buff[len + 1] = 0x00;
+			buff[len + 2] = 0x00;
+			buff[len + 3] = 0x01;
+
+			memcpy(buff + 4 + len, input[i].data, input[i].size);
+			len += input[i].size + 4;
+		}
+		else
+		{
+			memcpy(buff + 4, input[i].data, input[i].size);
+			len = input[i].size + 4;
+		}
+		
 
 		int ret = DecodeFrame(buff, len, &Pyuv);
 		if (ret == 0)

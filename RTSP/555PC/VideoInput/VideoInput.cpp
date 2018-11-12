@@ -72,7 +72,7 @@ FramedSource* VideoInput::videoSource()
 int VideoInput::getStream(void* to, unsigned int* len, struct timeval* timestamp, unsigned fMaxSize) 
 {
 	unsigned int stream_len = 0;
-	//printf("=============%d\n", dninput[npos].type);
+	printf("=============%d\n", dninput[npos].size);
 
 	stream_len = dninput[npos].size;
 	if (stream_len > fMaxSize) {
