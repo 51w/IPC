@@ -93,7 +93,7 @@ int main()
 
         ts_current = getTimeStamp();
         //ts_current += 3600;
-        //cout << rtp_num++ << "   " << frameSize << endl;
+        cout << rtp_num++ << "   " << frameSize << endl;
 
         if(frameSize <= MAX_RTP_PAYLOAD_SIZE)
         {

@@ -84,6 +84,8 @@ void decode_rtp2h264(unsigned char *rtp_buf, int len)
 
         if (fu_header->E == 1) 
 		{
+			printf("%3d, len: %6d \n",rtpnum++, nalu_len + 1); 
+			nalu_len = 0;			
 			//memcpy(dbuff, &rtp_buf[14], len - 14);
 			//dbuff_size = len - 14;
 			//ddec = DecodeFrame(dbuff, dbuff_size, &Pyuv);
@@ -136,6 +138,8 @@ void decode_rtp2h264(unsigned char *rtp_buf, int len)
     } 
 	else 
 	{
+		printf("%3d, len: %6d \n",rtpnum++, len - 12);
+		
 		dbuff[0] = 0x00;
 		dbuff[1] = 0x00;
 		dbuff[2] = 0x00;

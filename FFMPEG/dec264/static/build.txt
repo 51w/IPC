@@ -7,3 +7,11 @@
 make
 
 make install
+
+
+./configure --prefix=$PWD/222 --disable-shared  --enable-cross-compile --arch=arm --target-os=linux --cc=aarch64-linux-gcc --enable-gpl --enable-pthreads --disable-stripping --ar=aarch64-linux-ar --ld=aarch64-linux-gcc --strip=aarch64-linux-strip --disable-everything --enable-decoder=h264 --enable-parser=h264 --enable-filter=scale  --enable-static --disable-doc --disable-ffmpeg --disable-ffplay --disable-ffprobe  --disable-symver --disable-avresample --enable-small
+
+
+
+
+./configure --prefix=./222 --disable-shared --disable-everything --enable-decoder=h264 --enable-parser=h264 --enable-filter=scale  --disable-doc --disable-ffmpeg --disable-ffplay --disable-ffprobe  --disable-symver --disable-avresample --toolchain=msvc

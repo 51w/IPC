@@ -1,4 +1,4 @@
-﻿CROSS_COMPILE = arm-hisiv300-linux-
+﻿CROSS_COMPILE = aarch64-linux-
 CXX   = $(CROSS_COMPILE)g++
 CC    = $(CROSS_COMPILE)gcc
 AR    = $(CROSS_COMPILE)ar

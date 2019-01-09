@@ -33,6 +33,8 @@ int main(int argc, char* argv[])
 
 	YuvData Pyuv;
 	unsigned char *dyuv = (unsigned char*)malloc(1920 * 540 * 3);
+	FILE *fp;
+    fp = fopen("aa.yuv", "w");
 	
 	cv::namedWindow("RTP", CV_WINDOW_NORMAL);
 	cv::Mat yuvImg(540*3, 1920, CV_8UC1);
@@ -50,6 +52,8 @@ int main(int argc, char* argv[])
 			memcpy(dyuv + 1920 * 1080 , Pyuv.data[1], 1920 * 1080 / 4);
 			memcpy(dyuv + 1920 * 1350 , Pyuv.data[2], 1920 * 1080 / 4);
 			yuvImg.data = dyuv;
+			
+			fwrite(dyuv, 1, 1920 * 540 * 3, fp);
 
 			cv::Mat rgbImg;
 			cv::cvtColor(yuvImg, rgbImg, CV_YUV2BGR_I420);
@@ -59,6 +63,8 @@ int main(int argc, char* argv[])
 		}
 	}
 	UninitDecoder();
+	
+	fclose(fp);
 
 	return 0;
 }
