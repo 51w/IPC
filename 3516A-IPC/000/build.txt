@@ -1,0 +1,3 @@
+arm-hisiv300-linux-g++ main.cpp -o main -L./  -L./bufpool2 -lbufpool2 -L./yuv2rgb -lyuv2rgb -lrtsp -lstream
+
+export LD_LIBRARY_PATH='/usr/local/lib:/usr/lib:/home/IPC/3516A-IPC/000/bufpool2:/home/IPC/3516A-IPC/000/yuv2rgb:/home/IPC/3516A-IPC/000'

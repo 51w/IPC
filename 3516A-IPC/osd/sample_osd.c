@@ -20,24 +20,28 @@ extern "C" {
 
 #include "sample_comm.h"
 #include "sample_comm_ive.h"
-#include "librtspserver.hh"
-#include "bufpool.h"
+
 #include "yuv2rgb_c.h"
 #include "mtcnn_c.h"
+#include "stream.h"
+
 int fd_num = 0;
 int fd_box[40];
 int fd_run = 0;
 pthread_mutex_t mutex;
 unsigned char yuv[480*270*3/2];
 unsigned char rgb[480*270*3];
-//unsigned char yuv[640*360*3/2];
-//unsigned char rgb[640*360*3];
+int run_facedetect = 0;
+
+int run_stream = 0;
 
 #define MAX_FRM_CNT     256
 #define MAX_FRM_WIDTH   4096
 
 static HI_S32 s_s32MemDev = -1;
 
+//return -1;
+//return s32Ret;
 #define MEM_DEV_OPEN() \
     do {\
         if (s_s32MemDev <= 0)\
@@ -46,7 +50,7 @@ static HI_S32 s_s32MemDev = -1;
             if (s_s32MemDev < 0)\
             {\
                 perror("Open dev/mem error");\
-                return -1;\
+                return;\
             }\
         }\
     }while(0)
@@ -60,7 +64,7 @@ static HI_S32 s_s32MemDev = -1;
             if(HI_SUCCESS != s32Ret)\
             {\
                 perror("Close mem/dev Fail");\
-                return s32Ret;\
+                return;\
             }\
             s_s32MemDev = -1;\
         }\
@@ -352,10 +356,6 @@ HI_S32 SAMPLE_MISC_GETVB(VIDEO_FRAME_INFO_S* pstOutFrame, VIDEO_FRAME_INFO_S* ps
     u32Height  = 270;
     u32LStride = 480;
     u32CStride = 480;
-	// u32Width   = 640;
-    // u32Height  = 360;
-    // u32LStride = 640;
-    // u32CStride = 640;
 	
     if (PIXEL_FORMAT_YUV_SEMIPLANAR_422 == pstInFrame->stVFrame.enPixelFormat)
     {
@@ -525,7 +525,7 @@ void SAMPLE_VENC_1080()
 {
 	PAYLOAD_TYPE_E enPayLoad = PT_H264;
     PIC_SIZE_E enSize = PIC_HD1080;
-	//PIC_SIZE_E enSize = PIC_HD720;
+	PIC_SIZE_E enSize720 = PIC_HD720;
 	HI_S32 s32Ret = HI_SUCCESS;
 	
 	VPSS_GRP VpssGrp;
@@ -546,6 +546,9 @@ void SAMPLE_VENC_1080()
     u32BlkSize = SAMPLE_COMM_SYS_CalcPicVbBlkSize(gs_enNorm, enSize, SAMPLE_PIXEL_FORMAT, SAMPLE_SYS_ALIGN_WIDTH);
     stVbConf.astCommPool[0].u32BlkSize = u32BlkSize;
     stVbConf.astCommPool[0].u32BlkCnt = 8;
+	u32BlkSize = SAMPLE_COMM_SYS_CalcPicVbBlkSize(gs_enNorm, enSize720, SAMPLE_PIXEL_FORMAT, SAMPLE_SYS_ALIGN_WIDTH);
+    stVbConf.astCommPool[1].u32BlkSize = u32BlkSize;
+    stVbConf.astCommPool[1].u32BlkCnt = 8;
 
 	// step 2: mpp system init.
     s32Ret = SAMPLE_COMM_SYS_Init(&stVbConf);
@@ -576,7 +579,7 @@ void SAMPLE_VENC_1080()
     }
 
     // VENC
-    s32Ret = SAMPLE_COMM_VENC_Start(VencChn, PT_H264, gs_enNorm, enSize, SAMPLE_RC_CBR, 0);
+    s32Ret = SAMPLE_COMM_VENC_Start(VencChn, PT_H264, gs_enNorm, enSize720, SAMPLE_RC_CBR, 0);
     if (s32Ret != HI_SUCCESS)
     {
         SAMPLE_PRT("SAMPLE_COMM_VENC_Start fail,VencChn(%d),Error(%#x)\n", VencChn, s32Ret);
@@ -588,14 +591,6 @@ void SAMPLE_VENC_1080()
         SAMPLE_PRT("SAMPLE_COMM_VENC_StartGetStream fail,Error(%#x)\n", s32Ret);
         goto END_720P_6;
     }
-	
-	// Set bitrate
-	VENC_CHN_ATTR_S stVencChnAttr;
-	s32Ret = HI_MPI_VENC_GetChnAttr(VencChn, &stVencChnAttr);
-    //CHECK_RET(s32Ret, "get Rc Attr");
-	stVencChnAttr.stRcAttr.stAttrH264Cbr.u32BitRate = 1000;
-	s32Ret = HI_MPI_VENC_SetChnAttr(VencChn, &stVencChnAttr);
-	
 
     SAMPLE_RECT_ARRAY_S pstRect;
     pstRect.u16Num = 1;
@@ -627,10 +622,11 @@ void SAMPLE_VENC_1080()
 		goto END1;
 	}
 	
-    int nn = 50000;
-    int xx = 1000;
+    //int nn = 50000;
+    //int xx = 1000;
     //FILE* pfd = fopen("zzz.yuv", "w+b");
-    while(nn--)
+	run_stream = 1;
+    while(run_stream)
     {
         s32Ret = HI_MPI_VI_GetFrame(viChn, &stFrameInfo, s32GetFrameMilliSec);
         if (HI_SUCCESS != s32Ret)
@@ -638,9 +634,10 @@ void SAMPLE_VENC_1080()
             SAMPLE_PRT("HI_MPI_VI_GetFrame fail,viChn(%d),Error(%#x)\n", viChn, s32Ret);
             continue;
         }
+		//printf("===========%d %d\n", stFrameInfo.stVFrame.u32Width, stFrameInfo.stVFrame.u32Height);
 		
 		//Scale ***************************//
-		if(fd_run == 0)
+		if(fd_run == 0 && run_facedetect)
 		{
 			struct  timeval st, et;       
 			gettimeofday(&st, NULL);
@@ -769,54 +766,74 @@ END_VENC_1080P_CLASSIC_0:
     SAMPLE_COMM_SYS_Exit();
 }
 
-pthread_t gs_VencPid;
 pthread_t gs_FacePid;
-void *rtspserver(void* p);
 void *FaceDetect(void* p);
 
-int main()
+void *IPC_main00(void* p)
 {
 	signal(SIGINT, SAMPLE_VENC_HandleSig);
     signal(SIGTERM, SAMPLE_VENC_HandleSig);
 	pthread_mutex_init(&mutex, NULL);
 	
-	bufpool_init(0,2);
-	int port = 8554;
-    pthread_create(&gs_VencPid, 0, rtspserver, (void*)(&port));
-	pthread_create(&gs_FacePid, 0, FaceDetect, (void*)(&port));
+	pthread_create(&gs_FacePid, 0, FaceDetect, NULL);
+	usleep(100*1000);
 	
-	usleep(1000*1000);
 	//SAMPLE_VENC_1080P_CLASSIC();
     MEM_DEV_OPEN();
 	SAMPLE_VENC_1080();
     MEM_DEV_CLOSE();
-	
-	bufpool_exit();
 }
 
-void *rtspserver(void* p)
+pthread_t pt_main;
+int IPC_main()
 {
-    RtspServer();
+	pthread_create(&pt_main, 0, IPC_main00, NULL);
+}
+
+void IPC_exit()
+{
+	run_stream = 0;
+	usleep(2*1000*1000);
+}
+
+int set_bitrate(int rate)
+{
+	HI_S32 s32Ret = HI_SUCCESS;
+	
+	// Set bitrate
+	VENC_CHN_ATTR_S stVencChnAttr;
+	s32Ret = HI_MPI_VENC_GetChnAttr(0, &stVencChnAttr);
+	stVencChnAttr.stRcAttr.stAttrH264Cbr.u32BitRate = rate;
+	s32Ret = HI_MPI_VENC_SetChnAttr(0, &stVencChnAttr);
+	
+	return s32Ret;
 }
 
 void *FaceDetect(void* p)
 {
-	while(1)
+	while(run_stream)
 	{
-		if(fd_run == 1)
+		if(run_facedetect)
 		{
-			struct  timeval st, et;       
-			gettimeofday(&st, NULL);
-			ncnn_detect(rgb, 480, 270, &fd_num, fd_box);
-			gettimeofday(&et, NULL);
-			SAMPLE_PRT("FD cost:  [%dms]\n", (et.tv_sec - st.tv_sec)*1000 + (et.tv_usec - st.tv_usec)/1000);
-			
-			pthread_mutex_lock(&mutex);
-			fd_run = 0;
-			pthread_mutex_unlock(&mutex);
+			if(fd_run == 1)
+			{
+				struct  timeval st, et;       
+				gettimeofday(&st, NULL);
+				ncnn_detect(rgb, 480, 270, &fd_num, fd_box);
+				gettimeofday(&et, NULL);
+				SAMPLE_PRT("FD cost:  [%dms]\n", (et.tv_sec - st.tv_sec)*1000 + (et.tv_usec - st.tv_usec)/1000);
+				
+				pthread_mutex_lock(&mutex);
+				fd_run = 0;
+				pthread_mutex_unlock(&mutex);
+			}
+			else
+				usleep(5*1000);
 		}
 		else
-			usleep(5*1000);
+		{
+			usleep(1000*1000);
+		}
 	}
 }
 

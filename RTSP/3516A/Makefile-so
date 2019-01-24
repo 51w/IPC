@@ -1,4 +1,4 @@
-﻿TARGET = rtsp
+﻿TARGET = librtsp.so
 
 OBJS_PATH = objs
 
@@ -21,8 +21,10 @@ LIB  += -L$(shell pwd)/$(PLAT)/lib
 LD_FLAGS  = -lpthread -lliveMedia -lBasicUsageEnvironment -lUsageEnvironment -lgroupsock
 
 O_FLAG   = -O2
+CXX_FLAGS = -shared -fPIC
 
-SRC1  = $(notdir $(wildcard ./src/*.cpp))
+
+SRC1  = $(notdir $(wildcard ./so-src/*.cpp))
 OBJS1 = $(patsubst %.cpp,$(OBJS_PATH)/%.o,$(SRC1))
 
 all: BUILD_DIR $(TARGET)
@@ -33,7 +35,7 @@ BUILD_DIR:
 $(TARGET) : $(OBJS1)
 	$(CXX) $^ -o $@ $(CFLAGS) $(LIB) $(LD_FLAGS) $(CXX_FLAGS)
  
-$(OBJS_PATH)/%.o : ./src/%.cpp
+$(OBJS_PATH)/%.o : ./so-src/%.cpp
 	$(CXX) -c  $< -o  $@  $(CXX_FLAGS) $(INC) -lpthread
 
 
