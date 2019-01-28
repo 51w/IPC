@@ -231,7 +231,7 @@ int main()
 
 int parse_h264(std::vector<NaluUnit> &input)
 {
-	FILE *fp = fopen("../../h264/22.h264", "rb");
+	FILE *fp = fopen("../../h264/11.h264", "rb");
 	fseek(fp, 0L, SEEK_END);
 	int length = ftell(fp);
 	fseek(fp, 0L, SEEK_SET);

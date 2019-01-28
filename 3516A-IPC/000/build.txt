@@ -1,3 +1,19 @@
 arm-hisiv300-linux-g++ main.cpp -o main -L./  -L./bufpool2 -lbufpool2 -L./yuv2rgb -lyuv2rgb -lrtsp -lstream
 
 export LD_LIBRARY_PATH='/usr/local/lib:/usr/lib:/home/IPC/3516A-IPC/000/bufpool2:/home/IPC/3516A-IPC/000/yuv2rgb:/home/IPC/3516A-IPC/000'
+
+
+arm-hisiv300-linux-g++ main.cpp broadcast.c -o main -L./  -L./bufpool2 -lbufpool2 -L./yuv2rgb -lyuv2rgb -lrtsp -lstream -I./bufpool2 -lpthread
+
+
+
+[============]
+
+arm-hisiv300-linux-g++ main.cpp -o main -I./stream -I./bufpool2 -L./stream -L./bufpool2 -lbufpool2 -L./yuv2rgb -lyuv2rgb -lrtsp -lstream broadcast.c -lpthread
+
+mount -t nfs -o nolock 192.168.1.8:/home/wang/NFS /home
+
+export LD_LIBRARY_PATH='/usr/local/lib:/usr/lib:/home/IPC/3516A-IPC/000/bufpool2:/home/IPC/3516A-IPC/000/yuv2rgb:/home/IPC/3516A-IPC/000/stream'
+
+
+arm-hisiv300-linux-gcc main.c -o main -I./stream -I./bufpool2 -L./stream -L./bufpool2 -lbufpool2 -L./yuv2rgb -lyuv2rgb -lrtsp -lstream broadcast.c -lpthread -lstdc++

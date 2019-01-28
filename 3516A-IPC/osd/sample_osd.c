@@ -811,6 +811,7 @@ int set_bitrate(int rate)
 
 void *FaceDetect(void* p)
 {
+	usleep(1000*1000);
 	while(run_stream)
 	{
 		if(run_facedetect)
@@ -826,6 +827,7 @@ void *FaceDetect(void* p)
 				pthread_mutex_lock(&mutex);
 				fd_run = 0;
 				pthread_mutex_unlock(&mutex);
+				usleep(200*1000);
 			}
 			else
 				usleep(5*1000);

@@ -1,0 +1,39 @@
+> === <
+
+git clone git://git.ffmpeg.org/rtmpdump
+版本2.4
+
+XCFLAGS += -I/home/wang/NFS/h264/openssl-1.0.1u/000/include
+
+XCFLAGS += -I/home/wang/NFS/h264/zlib-1.2.11/000/include
+
+XLDFLAGS += -L/home/wang/NFS/h264/openssl-1.0.1u/000/lib
+
+XLDFLAGS += -L/home/wang/NFS/h264/zlib-1.2.11/000/lib
+
+
+
+[ OPENSSL ]
+
+下载解压后先阅读 README 和INSTALL 文档
+
+[***********1.0.1成功************]
+openssl-1.0.1u.tar.gz
+
+# ./config no-asm shared --prefix=$PWD/000
+# make
+# make install
+
+
+[ zlib ]
+
+# ./configure --prefix=./000
+# make
+# make install
+
+
+[ rtmp ]
+
+>>修改Makefile两个
+
+prefix=./000

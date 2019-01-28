@@ -1,0 +1,1 @@
+g++ bufpool2.cpp -shared -fPIC -lpthread -o libbufpool2.so
