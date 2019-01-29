@@ -18,14 +18,14 @@ int main()
   
   if(RTMP_Connect(rtmpdump, NULL)==FALSE) 
   {
-	printf("RTMP_Connect ERROR.\n");
+    printf("RTMP_Connect ERROR.\n");
     RTMP_Close(rtmpdump);
     goto rtmpdump_destroy;
   }
   
   if(RTMP_ConnectStream(rtmpdump,0)==FALSE)
   {
-	printf("RTMP_ConnectStream ERROR.\n");
+    printf("RTMP_ConnectStream ERROR.\n");
     RTMP_Close(rtmpdump);
     goto rtmpdump_destroy;
   }
