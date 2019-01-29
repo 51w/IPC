@@ -91,7 +91,7 @@ void *SrsStreamMain(void* p)
 	  
 	  memcpy(srsdata + srslen,  data.bptr, data.len);
 	  srslen += data.len;
-	  //printf("===========%d   %d=========\n", srslen-4, NalType);
+	  printf("===========%d   %d=========\n", srslen-4, NalType);
 	  
 	  int ret = srs_h264_write_raw_frames(rtmp, srsdata, srslen, dts, pts);
 	  if (ret != 0) 

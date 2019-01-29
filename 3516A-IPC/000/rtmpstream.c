@@ -214,7 +214,7 @@ int SendH264Packet(char *data, unsigned int size, int bIsKeyFrame, unsigned int 
 int streamrun = 0;
 void *StreamMain(void* p)
 {
-  printf("========rtmpdump=======\n");
+  printf("========rtmpdump=======%d\n", RTMP_HEAD_SIZE);
   //rtmp_connect("rtmp://192.168.1.7:1935/hls");
   //rtmp_connect("rtmp://192.168.1.8:1935/live/720p");
   rtmp_connect("rtmp://148.70.17.190:1935/live/720p");
@@ -230,6 +230,8 @@ void *StreamMain(void* p)
   {
     if(PullBuf(&data) && data.len>0)
     {
+	  printf("===========%d=========\n", data.len);
+		
 	  int NalType = data.bptr[0]&0x1f;
 	  if(NalType == 7)      setsps(data.bptr, data.len);
 	  else if(NalType == 8) setpps(data.bptr, data.len);

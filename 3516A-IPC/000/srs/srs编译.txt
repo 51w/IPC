@@ -1,0 +1,14 @@
+git reset --hard 4cb8de3029b4a0f1b2578def6be7771b926ddfa9
+
+
+./configure --export-librtmp-single=objs/srs-librtmp --osx && 
+ls -lh objs/srs-librtmp/srs_librtmp.h objs/srs-librtmp/srs_librtmp.cpp 
+
+
+./configure --disable-all --with-librtmp && make && 
+ls -lh objs/include/srs_librtmp.h objs/lib/srs_librtmp.a 
+
+
+cd objs/srs-librtmp &&
+gcc -g -O0 srs_h264_raw_publish.c srs_librtmp.cpp -o publisher -lstdc++ 
+./publisher ./720p.h264.raw rtmp://ossrs.net/live/h264.raw
