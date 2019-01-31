@@ -230,7 +230,7 @@ void *StreamMain(void* p)
   {
     if(PullBuf(&data) && data.len>0)
     {
-	  printf("===========%d=========\n", data.len);
+	  //printf("===========%d=========\n", data.len);
 		
 	  int NalType = data.bptr[0]&0x1f;
 	  if(NalType == 7)      setsps(data.bptr, data.len);

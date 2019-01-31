@@ -1,0 +1,11 @@
+prefix=/home/wang/NFS/IPC/00CC/WIFI/libnl-3.2.25/000
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libnl-nf
+Description: Netfilter Netlink Library
+Version: 3.2.25
+Requires: libnl-route-3.0
+Libs: -L${libdir} -lnl-nf-3
+Cflags: -I${includedir}/libnl3

@@ -1,0 +1,84 @@
+hash.lo: hash.c ../include/netlink/hash.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/lib/gcc/arm-hisiv300-linux-uclibcgnueabi/4.8.3/include/stdint.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/stdint.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/features.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/uClibc_config.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/sys/cdefs.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/wchar.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/wordsize.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/stdlib.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/lib/gcc/arm-hisiv300-linux-uclibcgnueabi/4.8.3/include/stddef.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/waitflags.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/waitstatus.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/endian.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/endian.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/byteswap.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/byteswap.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/byteswap-common.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/sys/types.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/types.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/typesizes.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/pthreadtypes.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/time.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/sys/select.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/select.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/sigset.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/time.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/sys/sysmacros.h \
+ /opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/alloca.h
+
+../include/netlink/hash.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/lib/gcc/arm-hisiv300-linux-uclibcgnueabi/4.8.3/include/stdint.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/stdint.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/features.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/uClibc_config.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/sys/cdefs.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/wchar.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/wordsize.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/stdlib.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/lib/gcc/arm-hisiv300-linux-uclibcgnueabi/4.8.3/include/stddef.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/waitflags.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/waitstatus.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/endian.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/endian.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/byteswap.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/byteswap.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/byteswap-common.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/sys/types.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/types.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/typesizes.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/pthreadtypes.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/time.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/sys/select.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/select.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/sigset.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/bits/time.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/sys/sysmacros.h:
+
+/opt/hisi-linux/x86-arm/arm-hisiv300-linux/target/usr/include/alloca.h:

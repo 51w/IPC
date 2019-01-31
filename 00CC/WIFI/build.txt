@@ -1,0 +1,58 @@
+1. 编译libnl
+  ./configure --host=arm-linux --prefix=$(pwd)/install --enable-shared --enable-static
+  ./configure --prefix=$(pwd)/000 CC=arm-hisiv300-linux-gcc --host=arm-linux
+  sudo apt-get install bison
+  sudo apt-get install flex
+
+  make -j8 
+  make install
+
+2.openssl编译
+  A.git下载opensource源码
+  git clone git://git.openssl.org/openssl.git
+  注意，请使用1.0.2f版本，1.1.0版本的原生源码不支持uclibc。
+  切换到 1.0.2f版本
+  cd openssl
+  git branch 1.0.2f
+  git checkout 1.0.2f
+  git reset --hard OpenSSL_1_0_2f
+
+  git下载opensource源码
+  git clone git://git.openssl.org/openssl.git
+  切换到 1.1.0版本
+  cd openssl
+  git checkout origin/OpenSSL_1_1_0-stable -b 1.1.0
+	
+  CC=arm-hisiv300-linux-gcc ./config --prefix=$(pwd)/000  shared no-zlib no-asm no-threads no-sse2 no-comp no-rfc3779 no-rc5 no-zlib-dynamic no-hw no-md2 no-md4 no-mdc2 no-rc2 no-idea no-camellia no-ec no-ecdsa no-ecdh no-des no-rc4 no-bf no-cast no-dsa no-dh no-ssl no-tls no-perlasm
+  <CC=arm-hisiv300-linux-gcc ./config no-asm shared --prefix=$(pwd)/000>
+
+  CC= mips-linux-uclibc-gnu-gcc
+  AR=mips-linux-uclibc-gnu-ar $(ARFLAGS) r
+  RANLIB= mips-linux-uclibc-gnu-ranlib
+  MAKEDEPPROG= mips-linux-uclibc-gnu-gcc
+
+  修改Makefile去掉-m64
+	
+  CC=arm-hisiv300-linux-gcc ./config --prefix=$PWD/../sslout no-asm no-aes no-idea no-camellia no-seed no-rc2 no-rc4 no-rc5 no-md2 no-md4 no-md5 no-sha no-sha1 no-ripemd no-mdc2 no-bf no-cast no-des no-dsa no-dh no-ssl2 no-ssl3 no-tlsext no-cms no-err no-krb5 no-ec no-ecdsa no-ecdh no-sock no-engine no-hw no-jpake no-capieng -DOPENSSL_NO_IDEA -DOPENSSL_NO_AES -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_SEED -DOPENSSL_NO_RC2 -DOPENSSL_NO_RC4 -DOPENSSL_NO_RC5 -DOPENSSL_NO_MD2 -DOPENSSL_NO_MD4 -DOPENSSL_NO_RIPEMD -DOPENSSL_NO_MDC2 -DOPENSSL_NO_BF -DOPENSSL_NO_CAST -DOPENSSL_NO_DES -DOPENSSL_NO_DSA -DOPENSSL_NO_DH -DOPENSSL_NO_SSL2 -DOPENSSL_NO_SSL3 -DOPENSSL_NO_TLSEXT -DOPENSSL_NO_CMS -DOPENSSL_NO_ERR -DOPENSSL_NO_JPAKE -DOPENSSL_NO_CAPIENG -DOPENSSL_NO_KRB5 -DOPENSSL_NO_EC -DOPENSSL_NO_ECDSA -DOPENSSL_NO_ECDH -DOPENSSL_NO_ENGINE -DOPENSSL_NO_HW
+
+3. 编译WPA
+  cp defconfig .config
+
+  修改Makefile
+  CC=arm-hisiv300-linux-gcc
+
+  CFLAGS += -I../../openssl-1.0.2n/000/include/
+  CFLAGS += -I../../libnl-3.2.25/000/include/libnl3
+
+  LIBS += -L../../openssl-1.0.2n/000/lib/
+  LIBS += -L../../libnl-3.2.25/000/lib/
+
+
+
+
+
+
+
+
+	
+	

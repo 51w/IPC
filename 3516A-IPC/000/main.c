@@ -11,17 +11,20 @@ int main()
 	printf("======================\n");
 	BroadCast_UDP();
 	IPC_main();
-	//RtspServer();
-	rtmpstream_run();
+	RtspServer();
+	//rtmpstream_run();
 	//srsrtmp_run();
 	
 	usleep(2*1000*1000);
-	set_bitrate(1000);
+	set_bitrate(3000);
+    while(1)
+    {
 	usleep(2000*1000*1000);
+    }
 	
 	IPC_exit();
-	//RtspServerExit();
-	rtmpstream_exit();
+	RtspServerExit();
+	//rtmpstream_exit();
 	//srsrtmp_exit();
 	
 	printf("======================\n");
