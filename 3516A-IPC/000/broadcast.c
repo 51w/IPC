@@ -231,6 +231,51 @@ static int process_udp(int sss, const struct sockaddr_in * sender_sock,
     sendbuf[1] = 6;
     sendto(sss, sendbuf, 2, 0, (struct sockaddr*)sender_sock, sizeof(struct sockaddr)); 
   }
+  if(udp_buf[0]==9&&udp_buf[1]==9)
+  {
+    char setrtmp[100];
+    sprintf(setrtmp, "echo %d > /home/isrtmp.conf", udp_buf[2]);
+    system(setrtmp);  usleep(100*1000);
+    
+    int result = 0;
+    char ssid[100]; char pswd[100];
+    result = sscanf(&udp_buf[3], "%s %s", ssid, pswd);
+    printf("@%s@%s@\n", ssid, pswd);
+    if(result==2)
+    {
+//      char setwifi[300];
+//      sprintf(setwifi,"echo \"ctrl_interface=/var/run/wpa_supplicant\n\
+//update_config=1\n\
+//network={\n\
+//ssid=\"%s\"\n\
+//key_mgmt=WPA-PSK\n\
+//proto=RSN WPA WPA2\n\
+//pairwise=TKIP CCMP\n\
+//group=TKIP CCMP\n\
+//psk=\"%s\"\n\
+//}\n\
+//\" > /home/wpa.conf", ssid, pswd);
+//    printf("[%s]\n", setwifi);
+//      system(setwifi);  usleep(100*1000);
+      FILE* fp = fopen("/home/wpa.conf", "wb");
+      fprintf(fp, "ctrl_interface=/var/run/wpa_supplicant\n");
+      fprintf(fp, "update_config=1\n");
+      fprintf(fp, "network={\n");
+      fprintf(fp, "ssid=\"%s\"\n", ssid);
+      fprintf(fp, "key_mgmt=WPA-PSK\n");
+      fprintf(fp, "proto=RSN WPA WPA2\n");
+      fprintf(fp, "pairwise=TKIP CCMP\n");
+      fprintf(fp, "group=TKIP CCMP\n");
+      fprintf(fp, "pairwise=TKIP CCMP\n");
+      fprintf(fp, "psk=\"%s\"\n", pswd);
+      fprintf(fp, "}\n");
+      fclose(fp);
+      
+      system("echo 1 > /home/autonet.conf");
+      usleep(1000*1000);
+      system("reboot");
+    }
+  }
 }
 
 int keep_running=1;

@@ -43,7 +43,7 @@ static unsigned short CalChkSum( unsigned short *addr, int len )
 * ips: 	被ping 的ip 地址
 * timeout: 超时时间(ms)
 */
-int MyPing( char *ips, int timeout )    
+int MyPing( char *ips, int timeout)    
 {        
 	struct timeval *tval;      
 	struct timeval timeo;    

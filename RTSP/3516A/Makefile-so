@@ -17,7 +17,7 @@ INC  += -I$(shell pwd)/$(PLAT)/include/BasicUsageEnvironment
 INC  += -I$(shell pwd)/$(PLAT)/include/groupsock
 INC  += -I$(shell pwd)/$(PLAT)/include/liveMedia
 INC  += -I$(shell pwd)/$(PLAT)/include/UsageEnvironment
-LIB  += -L$(shell pwd)/$(PLAT)/lib
+LIB  += -L$(shell pwd)/$(PLAT)/lib-IP
 LD_FLAGS  = -lpthread -lliveMedia -lBasicUsageEnvironment -lUsageEnvironment -lgroupsock
 
 O_FLAG   = -O2

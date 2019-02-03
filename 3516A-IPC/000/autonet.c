@@ -1,0 +1,212 @@
+#include <stdio.h>   
+#include <string.h> 
+#include <stdlib.h> 
+#include <pthread.h>  
+#include <sys/socket.h>   
+#include <netinet/in.h>   
+#include <netinet/ip.h>   
+#include <netinet/ip_icmp.h>   
+#include <netdb.h>  
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <sys/time.h>
+ 
+#define PACKET_SIZE     4096   
+#define ERROR           0   
+#define SUCCESS         1   
+  
+//效验算法（百度下有注释，但是还是看不太明白）   
+unsigned short cal_chksum(unsigned short *addr, int len)  
+{  
+  int nleft=len;  
+  int sum=0;  
+  unsigned short *w=addr;  
+  unsigned short answer=0;  
+      
+  while(nleft > 1)  
+  {  
+    sum += *w++;  
+    nleft -= 2;  
+  }  
+      
+  if( nleft == 1)  
+  {         
+    *(unsigned char *)(&answer) = *(unsigned char *)w;  
+    sum += answer;  
+  }  
+      
+  sum = (sum >> 16) + (sum & 0xffff);  
+  sum += (sum >> 16);  
+  answer = ~sum;  
+      
+  return answer;  
+}  
+ 
+int ping(char *ips, int timeout)
+{
+  struct timeval *tval;    
+  int maxfds = 0;
+  fd_set readfds;
+
+  struct sockaddr_in addr;
+  struct sockaddr_in from;  
+  bzero(&addr,sizeof(addr));
+  addr.sin_family = AF_INET;
+  addr.sin_addr.s_addr = inet_addr(ips);
+
+  int sockfd;
+  sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
+  if(sockfd < 0)
+  {
+    printf("ip:%s,socket error\n",ips);
+    return ERROR;
+  }
+      
+  struct timeval timeo;       
+  timeo.tv_sec  = timeout/1000;    
+  timeo.tv_usec = timeout%1000;    
+      
+  if(setsockopt(sockfd, SOL_SOCKET, SO_SNDTIMEO, &timeo, sizeof(timeo))==-1)
+  {
+    printf("ip:%s,setsockopt error\n",ips);
+    return ERROR;
+  }
+      
+  char sendpacket[PACKET_SIZE];
+  char recvpacket[PACKET_SIZE];
+  memset(sendpacket, 0, sizeof(sendpacket));
+      
+  pid_t pid;
+  // 取得PID，作为Ping的Sequence ID
+  pid=getpid();
+
+  struct ip *iph;
+  struct icmp *icmp;
+  icmp=(struct icmp*)sendpacket;
+  icmp->icmp_type=ICMP_ECHO;
+  icmp->icmp_code=0;
+  icmp->icmp_cksum=0;
+  icmp->icmp_seq=0;
+  icmp->icmp_id=pid;  
+  tval= (struct timeval *)icmp->icmp_data;
+  gettimeofday(tval,NULL);
+  icmp->icmp_cksum=cal_chksum((unsigned short *)icmp,sizeof(struct icmp)); //校验
+      
+  int n;  
+  n = sendto(sockfd, (char *)&sendpacket, sizeof(struct icmp), 0, (struct sockaddr *)&addr, sizeof(addr));
+  if(n < 1)
+  {
+    printf("ip:%s,sendto error\n",ips);
+    return ERROR;
+  }
+
+  // 接受
+  // 由于可能接受到其他Ping的应答消息，所以这里要用循环
+  while(1)
+  {
+  // 设定TimeOut时间，这次才是真正起作用的
+    FD_ZERO(&readfds);
+    FD_SET(sockfd, &readfds);
+    maxfds = sockfd + 1;
+    n = select(maxfds, &readfds, NULL, NULL, &timeo);
+    if(n <= 0)
+    {
+      printf("ip:%s,Time out error\n",ips);
+      close(sockfd);
+      return ERROR;
+    }
+           
+    memset(recvpacket, 0, sizeof(recvpacket));    
+    int fromlen = sizeof(from);    
+    n = recvfrom(sockfd, recvpacket, sizeof(recvpacket), 0, (struct sockaddr *)&from, (socklen_t *)&fromlen);    
+    if(n < 1) 
+    {  
+      close(sockfd);
+      return ERROR;
+    }    
+          
+       
+    char *from_ip = (char *)inet_ntoa(from.sin_addr);    
+    // 判断是否是自己Ping的回复     
+    if (strcmp(from_ip,ips) != 0)    
+    {   
+      printf("NowPingip:%s Fromip:%s\nNowPingip is not same to Fromip,so ping wrong!\n",ips,from_ip);    
+      return ERROR;  
+    }    
+          
+    iph = (struct ip *)recvpacket;    
+    icmp=(struct icmp *)(recvpacket + (iph->ip_hl<<2));    
+    //printf("ip:%s\n,icmp->icmp_type:%d\n,icmp->icmp_id:%d\n",ips,icmp->icmp_type,icmp->icmp_id);    
+  
+    if(icmp->icmp_type == ICMP_ECHOREPLY && icmp->icmp_id == pid)   //ICMP_ECHOREPLY回显应答 
+    {    
+      // 正常就退出循环
+      break;
+    }else
+    {
+      // 否则继续等
+      continue;
+    }
+  }
+  close(sockfd);
+  return SUCCESS; 
+}
+  
+// int main()  
+// {      
+    // if(ping("148.70.17.190", 3000*1000))
+    // {  printf("Ping succeed!\n");  }  
+    // else  
+    // {  printf("Ping wrong!\n");  }  
+      
+// }
+
+int autonet()
+{
+  FILE* fp = fopen("/home/autonet.conf", "rb");
+  int ZZZ = 0;
+  fscanf(fp, "%d", &ZZZ);
+  printf("Autonet [%d]\n", ZZZ);
+  
+  int result = 0;
+  if(ZZZ)
+  {
+    printf("connect> wifi\n");
+    system("/home/wpa_supplicant -B -Dwext -iwlan0 -c/home/wpa.conf");
+    usleep(3000*1000);
+    system("udhcpc -i wlan0 &");
+    usleep(5000*1000);
+    
+    if(ping("148.70.17.190", 2000*1000))
+      result = 1;
+    if(ping("148.70.17.190", 2000*1000))
+      result = 1;
+    if(ping("148.70.17.190", 2000*1000))
+      result = 1;
+  
+    if(ping("148.70.17.190", 2000*1000)){
+      result = 1;
+    }
+    else{
+      system("echo 0 > /home/autonet.conf");
+      usleep(5000*1000);
+      system("reboot");
+    }
+  }
+  else
+  {
+    system("hostapd /home/hostapd.conf -B");
+    usleep(3000*1000);
+    system("ifconfig wlan0 192.168.2.10");
+    usleep(200*1000);
+    system("udhcpc -i wlan0 &");
+    usleep(3000*1000);
+    system("ifconfig wlan0 192.168.2.10");
+    usleep(5000*1000);
+    result = 0;
+  }
+  
+  fclose(fp);
+  return result;
+}
+

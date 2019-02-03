@@ -8,7 +8,7 @@ LIB = -L./bufpool2 -L./stream -L./yuv2rgb -L./rtmpdump
 LIB += -lbufpool2 -lyuv2rgb -lstream -lrtsp -lrtmp
 LIB += -lpthread  -lstdc++
 
-SRC = main.c broadcast.c rtmpstream.c
+SRC = main.c broadcast.c rtmpstream.c autonet.c
 
 SRC += srs/srs_librtmp.cpp srs/srsrtmp.c
 INC += -I./srs 
