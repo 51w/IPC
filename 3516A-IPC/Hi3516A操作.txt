@@ -1,0 +1,26 @@
+制作rootfs文件系统
+执行下面的命令
+ ./mkfs.jffs2 -d ./rootfs -l -e 0x10000 -o rootfs.jffs2
+生成的rootfs.jffs2这个就是要烧录到板子上的文件，把生成的rootfs.jffs2文件拷贝到tftp下载目录里面
+
+
+uboot烧写内核
+set serverip 192.168.1.199;mw.b 0x82000000 0xFF 0x1c0000;tftp 0x82000000 uImage;sf probe 0;sf erase 0x100000 0x1c0000;sf write 0x82000000 0x100000 0x1c0000
+
+烧写rootfs文件系统
+set serverip 192.168.1.199;mw.b 0x82000000 0xFF 0xd40000;tftp 0x82000000 rootfs.jffs2;sf probe 0;sf erase 0x2c0000 0xd40000;sf write 0x82000000 0x2c0000 0xd40000
+
+设置启动参数和启动命令
+setenv bootargs 'mem=128M console=ttyAMA0,115200 root=/dev/mtdblock2 rootfstype=jffs2 mtdparts=hi_sfc:1M(boot),1792K(kernel),13568K(rootfs)';setenv bootcmd 'sf probe 0;sf read 0x82000000 0x100000 0x300000;bootm 0x82000000'
+saveenv
+reset
+
+
+mount -t nfs -o nolock 192.168.1.9:/home/wang/NFS /home
+
+
+echo "nameserver 114.114.114.114" > /etc/resolv.conf
+echo "nameserver 192.168.1.1" > /etc/resolv.conf
+
+export LD_LIBRARY_PATH='/usr/local/lib:/usr/lib:/home/IPC/RTSP/bufpool:/home/IPC/RTSP/yuv2rgb'
+
