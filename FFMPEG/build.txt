@@ -1,0 +1,6 @@
+./configure --toolchain=msvc --arch=x64 --enable-cross-compile --target-os=win32 --prefix=./999 --disable-shared --disable-everything --enable-decoder=h264 --enable-parser=h264 --enable-filter=scale  --enable-static --disable-doc --disable-ffmpeg --disable-ffplay --disable-ffprobe  --disable-symver --disable-avresample
+
+
+make 
+
+make install
